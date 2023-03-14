@@ -3,7 +3,7 @@ import os
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 from profanity_check import predict, predict_prob
-import asr_module as asr
+# import asr_module as asr
 
 
 app = Flask(__name__)
@@ -45,5 +45,5 @@ def textObscenity(input_string):
     return jsonify({'prediction': str(prediction[0]), 'probability': str(probability[0])})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 8000))
+    port = int(os.environ.get('PORT', 8080))
     app.run(host='0.0.0.0', port=port, debug=True)
