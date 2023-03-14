@@ -4,5 +4,5 @@ Flask_Cors==3.0.10
 profanity_check==1.0.3
 torch
 tqdm==4.65.0
-wenetruntime==1.13.0
+wenetruntime
 equi
