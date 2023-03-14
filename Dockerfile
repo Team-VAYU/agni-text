@@ -9,4 +9,4 @@ ADD ./templates /opt/templates
 
 WORKDIR /opt
 
-CMD 
+CMD gunicorn --timeout 360 --bind 0.0.0.0:$PORT -k gevent --worker-connections 32 app:app
