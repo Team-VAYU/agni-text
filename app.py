@@ -19,7 +19,7 @@ CORS(app)
 def hello_world():
     return render_template('index.html')
 
-@app.route('/audio/')
+@app.route('/audio/', methods=['POST'])
 def audioObscenity():
     import time
     start = time.time()
@@ -30,15 +30,7 @@ def audioObscenity():
     with tempfile.NamedTemporaryFile(suffix='.wav') as tmp:
         os.system(f"wget {audio} -O {tmp.name}")
         audio_data, sample_rate = af.read(tmp.name)
-    # else:
-        # audio_data = requests.get(audio).content
         model = whisper.load_model("tiny")
-        # convert audio_data to numpy array
-        # audio_data = np.frombuffer(audio_data, dtype=np.int16)
-        # audio_data = np.pad(audio_data, pad_width=(0, 387), mode='constant')
-        # audio_data = audio_data.astype(np.float32)
-
-        # result = model.transcribe()
         text = model.transcribe(audio_data)
         text = text["text"]
         print(text)
@@ -47,7 +39,7 @@ def audioObscenity():
         probability = predict_prob([text])
         return jsonify({'prediction': str(prediction[0]), 'probability': str(probability[0])})
 
-@app.route('/text/')
+@app.route('/text/', methods=['POST'])
 def textObscenity():
     # limit number of words to 80
     # get input string from body of request
