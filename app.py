@@ -8,6 +8,8 @@ from audio import stt
 import tempfile
 import audiofile as af
 import random
+import whisper
+import numpy as np
 
 
 app = Flask(__name__)
@@ -26,14 +28,23 @@ def audioObscenity():
         return jsonify({'error': 'no audio url'})
     with tempfile.NamedTemporaryFile(suffix='.wav') as tmp:
         os.system(f"wget {audio} -O {tmp.name}")
-        audio, sample_rate = af.read(tmp.name)
-        # save as wav with 16k bitrate and 30 random seconds
-        start_index = random.randint(0, len(audio) - 480000)
-        af.write(tmp.name, audio[start_index:start_index+480000], sample_rate)
-        text = stt.main(tmp.name)
+        audio_data, sample_rate = af.read(tmp.name)
+    # else:
+        # audio_data = requests.get(audio).content
+        model = whisper.load_model("tiny")
+        # convert audio_data to numpy array
+        # audio_data = np.frombuffer(audio_data, dtype=np.int16)
+        # audio_data = np.pad(audio_data, pad_width=(0, 387), mode='constant')
+        # audio_data = audio_data.astype(np.float32)
+
+        # result = model.transcribe()
+        text = model.transcribe(audio_data)
+        text = text["text"]
         print(text)
         print(time.time() - start)
-        return textObscenity(text)
+        prediction = predict([text])
+        probability = predict_prob([text])
+        return jsonify({'prediction': str(prediction[0]), 'probability': str(probability[0])})
 
 @app.route('/text/<string:input_string>')
 def textObscenity(input_string):

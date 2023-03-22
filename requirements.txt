@@ -2,7 +2,9 @@ audiofile
 alt_profanity_check==1.0.1
 Flask==2.2.3
 Flask_Cors==3.0.10
+numpy
 pydub
 requests
 tqdm==4.65.0
 wenetruntime
+openai-whisper
