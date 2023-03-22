@@ -23,7 +23,8 @@ def hello_world():
 def audioObscenity():
     import time
     start = time.time()
-    audio = request.args.get('url')
+    req = request.get_json()
+    audio = req['url']
     if audio is None:
         return jsonify({'error': 'no audio url'})
     with tempfile.NamedTemporaryFile(suffix='.wav') as tmp:
@@ -46,9 +47,12 @@ def audioObscenity():
         probability = predict_prob([text])
         return jsonify({'prediction': str(prediction[0]), 'probability': str(probability[0])})
 
-@app.route('/text/<string:input_string>')
-def textObscenity(input_string):
+@app.route('/text/')
+def textObscenity():
     # limit number of words to 80
+    # get input string from body of request
+    req = request.get_json()
+    input_string = req['text']
     if len(input_string.split()) > 80:
         return jsonify({'error': 'too many words'})
 
